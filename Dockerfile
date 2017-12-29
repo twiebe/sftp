@@ -1,15 +1,15 @@
 FROM debian:stretch
-MAINTAINER Adrian Dvergsdal [atmoz.net]
+MAINTAINER Thomas Wiebe
 
-# Steps done in one RUN layer:
-# - Install packages
-# - OpenSSH needs /var/run/sshd to run
-# - Remove generic host keys, entrypoint generates unique keys
 RUN apt-get update && \
-    apt-get -y install openssh-server && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /var/run/sshd && \
-    rm -f /etc/ssh/ssh_host_*key*
+    DEBIAN_FRONTEND=noninteractive apt-get -y \
+      -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
+      install mysecureshell whois procps openssh-server
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /var/run/sshd
+RUN rm -f /etc/ssh/ssh_host_*key*
+RUN chmod 4755 /usr/bin/mysecureshell
 
 COPY sshd_config /etc/ssh/sshd_config
 COPY entrypoint /

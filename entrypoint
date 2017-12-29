@@ -56,7 +56,7 @@ function createUser() {
         return 0
     fi
 
-    useraddOptions="--no-user-group"
+    useraddOptions="--no-user-group -s /usr/bin/mysecureshell"
 
     if [ -n "$uid" ]; then
         useraddOptions="$useraddOptions --non-unique --uid $uid"

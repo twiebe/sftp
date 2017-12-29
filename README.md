@@ -1,20 +1,8 @@
-# SFTP
-
-![Docker Automated build](https://img.shields.io/docker/automated/atmoz/sftp.svg) ![Docker Build Status](https://img.shields.io/docker/build/atmoz/sftp.svg) ![Docker Stars](https://img.shields.io/docker/stars/atmoz/sftp.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/atmoz/sftp.svg)
-
-![OpenSSH logo](https://raw.githubusercontent.com/atmoz/sftp/master/openssh.png "Powered by OpenSSH")
-
-# Supported tags and respective `Dockerfile` links
-
-- [`debian-stretch`, `debian`, `latest` (*Dockerfile*)](https://github.com/atmoz/sftp/blob/master/Dockerfile) [![](https://images.microbadger.com/badges/image/atmoz/sftp.svg)](http://microbadger.com/images/atmoz/sftp "Get your own image badge on microbadger.com")
-- [`debian-jessie` (*Dockerfile*)](https://github.com/atmoz/sftp/blob/debian-jessie/Dockerfile) [![](https://images.microbadger.com/badges/image/atmoz/sftp:debian-jessie.svg)](http://microbadger.com/images/atmoz/sftp:debian-jessie "Get your own image badge on microbadger.com")
-- [`alpine-3.6`, `alpine` (*Dockerfile*)](https://github.com/atmoz/sftp/blob/alpine/Dockerfile) [![](https://images.microbadger.com/badges/image/atmoz/sftp:alpine.svg)](http://microbadger.com/images/atmoz/sftp:alpine "Get your own image badge on microbadger.com")
-- [`alpine-3.5` (*Dockerfile*)](https://github.com/atmoz/sftp/blob/alpine-3.5/Dockerfile) [![](https://images.microbadger.com/badges/image/atmoz/sftp:alpine-3.5.svg)](http://microbadger.com/images/atmoz/sftp:alpine "Get your own image badge on microbadger.com")
-
 # Securely share your files
 
-Easy to use SFTP ([SSH File Transfer Protocol](https://en.wikipedia.org/wiki/SSH_File_Transfer_Protocol)) server with [OpenSSH](https://en.wikipedia.org/wiki/OpenSSH).
-This is an automated build linked with the [debian](https://hub.docker.com/_/debian/) and [alpine](https://hub.docker.com/_/alpine/) repositories.
+Easy to use SFTP ([SSH File Transfer Protocol](https://en.wikipedia.org/wiki/SSH_File_Transfer_Protocol)) server with [OpenSSH](https://en.wikipedia.org/wiki/OpenSSH) and [MySecureShell](https://mysecureshell.readthedocs.io/en/latest/).
+
+This image extends the awesome `atmoz/sftp` image to use MySecureShell instead of OpenSSH's internal sftp-server. This allows for bandwidth and connection limits, as well as enhanced ACLs.
 
 # Usage
 
@@ -32,6 +20,7 @@ This is an automated build linked with the [debian](https://hub.docker.com/_/deb
     own home directory, so make sure there are at least one subdirectory if you
     want them to upload files.
   - For consistent server fingerprint, mount your own host keys (i.e. `/etc/ssh/ssh_host_*`)
+  - Create a custom `sftp_config` and mount it to `/etc/ssh/sftp_config` to override MySecureShell defaults. (**highly recommended**)
 
 # Examples
 
@@ -165,10 +154,6 @@ bindmount /data/docs /home/peter/docs --read-only
 ```
 
 **NOTE:** Using `mount` requires that your container runs with the `CAP_SYS_ADMIN` capability turned on. [See this answer for more information](https://github.com/atmoz/sftp/issues/60#issuecomment-332909232).
-
-# What's the difference between Debian and Alpine?
-
-The biggest differences are in size and OpenSSH version. [Alpine](https://hub.docker.com/_/alpine/) is 10 times smaller than [Debian](https://hub.docker.com/_/debian/). OpenSSH version can also differ, as it's two different teams maintaining the packages. Debian is generally considered more stable and only bugfixes and security fixes are added after each Debian release (about 2 years). Alpine has a faster release cycle (about 6 months) and therefore newer versions of OpenSSH. As I'm writing this, Debian has version 7.4 while Alpine has version 7.5. Recommended reading: [Comparing Debian vs Alpine for container & Docker apps](https://www.turnkeylinux.org/blog/alpine-vs-debian)
 
 # What version of OpenSSH do I get?
 
