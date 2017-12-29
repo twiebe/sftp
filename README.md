@@ -20,7 +20,7 @@ This image extends the awesome `atmoz/sftp` image to use MySecureShell instead o
     own home directory, so make sure there are at least one subdirectory if you
     want them to upload files.
   - For consistent server fingerprint, mount your own host keys (i.e. `/etc/ssh/ssh_host_*`)
-  - Create a custom `sftp_config` and mount it to `/etc/ssh/sftp_config` to override MySecureShell defaults. (**highly recommended**)
+  - Create a custom `sftp_config` and mount it to `/etc/ssh/sftp_config` to override MySecureShell defaults. See [MySecureShell documentation](https://mysecureshell.readthedocs.io/en/latest/configuration_overview.html) for available options. (**highly recommended**)
 
 # Examples
 
