@@ -2,7 +2,7 @@
 
 Easy to use SFTP ([SSH File Transfer Protocol](https://en.wikipedia.org/wiki/SSH_File_Transfer_Protocol)) server with [OpenSSH](https://en.wikipedia.org/wiki/OpenSSH) and [MySecureShell](https://mysecureshell.readthedocs.io/en/latest/).
 
-This image extends the awesome `atmoz/sftp` image to use MySecureShell instead of OpenSSH's internal sftp-server. This allows for bandwidth and connection limits, as well as enhanced ACLs.
+This image is based on the `atmoz/sftp` image, extended to use MySecureShell instead of OpenSSH's internal sftp-server. This allows for bandwidth and connection limits, as well as enhanced ACLs.
 
 # Usage
 
@@ -19,7 +19,7 @@ This image extends the awesome `atmoz/sftp` image to use MySecureShell instead o
     Just remember that the users can't create new files directly under their
     own home directory, so make sure there are at least one subdirectory if you
     want them to upload files.
-  - For consistent server fingerprint, mount your own host keys (i.e. `/etc/ssh/ssh_host_*`)
+  - For persistent server fingerprint, mount your own host keys (i.e. `/etc/ssh/ssh_host_*`)
   - Create a custom `sftp_config` and mount it to `/etc/ssh/sftp_config` to override MySecureShell defaults. See [MySecureShell documentation](https://mysecureshell.readthedocs.io/en/latest/configuration_overview.html) for available options. (**highly recommended**)
 
 # Examples
@@ -27,7 +27,7 @@ This image extends the awesome `atmoz/sftp` image to use MySecureShell instead o
 ## Simplest docker run example
 
 ```
-docker run -p 22:22 -d atmoz/sftp foo:pass:::upload
+docker run -p 22:22 -d heimblick/sftp foo:pass:::upload
 ```
 
 User "foo" with password "pass" can login with sftp and upload files to a folder called "upload". No mounted directories or custom UID/GID. Later you can inspect the files and use `--volumes-from` to mount them somewhere else (or see next example).
@@ -39,7 +39,7 @@ Let's mount a directory and set UID:
 ```
 docker run \
     -v /host/upload:/home/foo/upload \
-    -p 2222:22 -d atmoz/sftp \
+    -p 2222:22 -d heimblick/sftp \
     foo:pass:1001
 ```
 
@@ -47,7 +47,7 @@ docker run \
 
 ```
 sftp:
-    image: atmoz/sftp
+    image: heimblick/sftp
     volumes:
         - /host/upload:/home/foo/upload
     ports:
@@ -65,7 +65,7 @@ The OpenSSH server runs by default on port 22, and in this example, we are forwa
 docker run \
     -v /host/users.conf:/etc/sftp/users.conf:ro \
     -v mySftpVolume:/home \
-    -p 2222:22 -d atmoz/sftp
+    -p 2222:22 -d heimblick/sftp
 ```
 
 /host/users.conf:
@@ -83,7 +83,7 @@ Add `:e` behind password to mark it as encrypted. Use single quotes if using ter
 ```
 docker run \
     -v /host/share:/home/foo/share \
-    -p 2222:22 -d atmoz/sftp \
+    -p 2222:22 -d heimblick/sftp \
     'foo:$1$0G2g0GSt$ewU0t6GXG15.0hWoOX8X9.:e:1001'
 ```
 
@@ -99,7 +99,7 @@ docker run \
     -v /host/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro \
     -v /host/id_other.pub:/home/foo/.ssh/keys/id_other.pub:ro \
     -v /host/share:/home/foo/share \
-    -p 2222:22 -d atmoz/sftp \
+    -p 2222:22 -d heimblick/sftp \
     foo::1001
 ```
 
@@ -112,7 +112,7 @@ docker run \
     -v /host/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key \
     -v /host/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key \
     -v /host/share:/home/foo/share \
-    -p 2222:22 -d atmoz/sftp \
+    -p 2222:22 -d heimblick/sftp \
     foo::1001
 ```
 

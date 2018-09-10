@@ -1,15 +1,23 @@
-FROM debian:stretch
+FROM debian:stretch-slim
 MAINTAINER Thomas Wiebe
 
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y \
-      -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
-      install mysecureshell whois procps openssh-server
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /var/run/sshd
-RUN rm -f /etc/ssh/ssh_host_*key*
-RUN chmod 4755 /usr/bin/mysecureshell
+ARG GIT_REPO_URL
+
+RUN set -ex \
+    && apt update \
+    && apt install -y whois procps openssh-server \
+    && apt install -y git gcc make \
+    && git clone "${GIT_REPO_URL:-https://github.com/mysecureshell/mysecureshell}" mysecureshell \
+    && cd mysecureshell \
+    && ./configure --prefix=/usr \
+    && make all \
+    && make install \
+    && chmod 4755 /usr/bin/mysecureshell \
+    && cd .. \
+    && apt purge -y git gcc make \
+    && apt autoremove -y \
+    && rm -fv /etc/ssh/ssh_host_*key* \
+    && mkdir /run/sshd
 
 COPY sshd_config /etc/ssh/sshd_config
 COPY entrypoint /
