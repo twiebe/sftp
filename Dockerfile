@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:buster-slim
 MAINTAINER Thomas Wiebe
 
 ARG GIT_REPO_URL
